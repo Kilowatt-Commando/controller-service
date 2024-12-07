@@ -30,15 +30,15 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
   
       - name: Build Docker image
-        run: docker build -t ghcr.io/controller-service:latest .
+        run: docker build -t ghcr.io/kilowatt-commando/controller-service:latest .
   
       - name: Push Docker image to GHCR
-        run: docker push ghcr.io/controller-service:latest
+        run: docker push ghcr.io/kilowatt-commando/controller-service:latest
         
       - name: Delete old packages
         uses: actions/delete-package-versions@v5
         with:
-          package-name: controller-service
+          package-name: kilowatt-commando/controller-service
           owner: 'kilowatt-commando'
           package-type: 'container'
           token: ${{ secrets.GITHUB_TOKEN }}

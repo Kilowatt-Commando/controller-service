@@ -35,9 +35,9 @@ jobs:
         run: docker push ghcr.io/kilowatt-commando/controller-service:latest
         
       - name: Delete old packages
-        uses: actions/delete-package-versions@v5.0.0
+        uses: actions/delete-package-versions@v5
         with:
-          package-name: kilowatt-commando/controller-service
+          package-name: 'controller-service'
           owner: 'kilowatt-commando'
           package-type: 'container'
           token: ${{ secrets.GITHUB_TOKEN }}

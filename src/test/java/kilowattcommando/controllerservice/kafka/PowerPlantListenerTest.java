@@ -4,6 +4,7 @@ import dto.PowerplantStatus;
 import kilowattcommando.controllerservice.handlers.PowerPlantStatusHandler;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +27,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
 @SpringBootTest
@@ -52,6 +52,7 @@ public class PowerPlantListenerTest {
         registry.add("kafka.serverAddress", KAFKA::getIpAddress);
         registry.add("kafka.serverPort", KAFKA::getFirstMappedPort);
         registry.add("spring.kafka.bootstrap-servers", KAFKA::getBootstrapServers);
+        registry.add("kafka.controlTopic", () -> "powerplant");
     }
 
     @Test
@@ -59,13 +60,13 @@ public class PowerPlantListenerTest {
         PowerplantStatus powerplantStatus = new PowerplantStatus();
         powerplantStatus.name = "powerplant1";
 
-        kafkaTestTemplate.send("powerplant", powerplantStatus);
+        kafkaTestTemplate.send("backend", powerplantStatus);
 
         await()
                 .pollInterval(3, TimeUnit.SECONDS)
                 .atMost(60, TimeUnit.SECONDS)
                 .untilAsserted(() -> {
-                    assertEquals(1, ((PowerPlantHandlerStub) powerPlantStatusHandler).getMessageCount());
+                    Assertions.assertEquals(1, ((PowerPlantHandlerStub) powerPlantStatusHandler).getMessageCount());
                 });
     }
 

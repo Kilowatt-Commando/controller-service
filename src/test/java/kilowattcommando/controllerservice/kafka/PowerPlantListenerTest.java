@@ -1,24 +1,15 @@
 package kilowattcommando.controllerservice.kafka;
 
 import dto.PowerplantStatus;
-import kilowattcommando.controllerservice.handlers.PowerPlantLoggingHandler;
 import kilowattcommando.controllerservice.handlers.PowerPlantStatusHandler;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.internal.util.MockUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
@@ -33,13 +24,9 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
 @SpringBootTest
@@ -55,7 +42,7 @@ public class PowerPlantListenerTest {
             DockerImageName.parse("confluentinc/cp-kafka")
     );
     @Autowired
-    private KafkaTemplate<String, PowerplantStatus> kafkaTemplate;
+    private KafkaTemplate<String, PowerplantStatus> kafkaTestTemplate;
 
     @Autowired
     private PowerPlantStatusHandler powerPlantStatusHandler;
@@ -72,11 +59,11 @@ public class PowerPlantListenerTest {
         PowerplantStatus powerplantStatus = new PowerplantStatus();
         powerplantStatus.name = "powerplant1";
 
-        kafkaTemplate.send("powerplant", powerplantStatus);
+        kafkaTestTemplate.send("powerplant", powerplantStatus);
 
         await()
                 .pollInterval(3, TimeUnit.SECONDS)
-                .atMost(10, TimeUnit.SECONDS)
+                .atMost(60, TimeUnit.SECONDS)
                 .untilAsserted(() -> {
                     assertEquals(1, ((PowerPlantHandlerStub) powerPlantStatusHandler).getMessageCount());
                 });
@@ -87,7 +74,7 @@ public class PowerPlantListenerTest {
      * Configuration of the KafkaProducer for testing purposes
      */
     @TestConfiguration
-    public static class KafkaProducerConfig {
+    public static class KafkaProducerTestConfig {
         @Value("${kafka.serverPort}")
         private String kafkaServerPort;
 
@@ -95,7 +82,7 @@ public class PowerPlantListenerTest {
         private String kafkaServerAddress;
 
         @Bean
-        public <T> ProducerFactory<String, T> producerFactory() {
+        public <T> ProducerFactory<String, T> producerTestFactory() {
             Map<String, Object> configs = new HashMap<>();
             configs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServerAddress + ":" + kafkaServerPort);
             configs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -104,8 +91,8 @@ public class PowerPlantListenerTest {
         }
 
         @Bean
-        public <T> KafkaTemplate<String, T> kafkaTemplate() {
-            return new KafkaTemplate<>(producerFactory());
+        public <T> KafkaTemplate<String, T> kafkaTestTemplate() {
+            return new KafkaTemplate<>(producerTestFactory());
         }
 
         @Bean

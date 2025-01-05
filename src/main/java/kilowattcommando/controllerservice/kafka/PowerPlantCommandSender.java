@@ -1,5 +1,5 @@
 package kilowattcommando.controllerservice.kafka;
 
 public interface PowerPlantCommandSender {
-    void sendCommand(Long powerPlantId, String command);
+    void sendCommand(String powerPlantId, String command);
 }

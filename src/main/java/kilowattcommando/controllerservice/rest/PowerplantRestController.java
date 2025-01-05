@@ -1,6 +1,5 @@
 package kilowattcommando.controllerservice.rest;
 
-import jakarta.websocket.server.PathParam;
 import kilowattcommando.controllerservice.handlers.PowerPlantLoggingHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,19 +12,19 @@ public class PowerplantRestController {
     private static final Logger log = LoggerFactory.getLogger(PowerPlantLoggingHandler.class);
 
     @PutMapping("/start")
-    private ResponseEntity<String> startPowerplant(@PathVariable Long id) {
+    private ResponseEntity<String> startPowerplant(@PathVariable String id) {
         log.info("Request to start powerplant with id {}", id);
         return ResponseEntity.ok("Powerplant started");
     }
 
     @PutMapping("/stop")
-    private ResponseEntity<String> stopPowerplant(@PathVariable Long id) {
+    private ResponseEntity<String> stopPowerplant(@PathVariable String id) {
         log.info("Request to stop powerplant with id {}", id);
         return ResponseEntity.ok("Powerplant stopped");
     }
 
     @PutMapping("/gateClosure")
-    private ResponseEntity<String> changeGateClosure(@PathVariable Long id, @RequestBody GateClosure gateClosure) {
+    private ResponseEntity<String> changeGateClosure(@PathVariable String id, @RequestBody GateClosure gateClosure) {
         log.info("Request to change gate closure to {} which is {} on powerplant with id {}", gateClosure.closure(), gateClosure.validate() ? "valid" : "not valid" , id);
         if(gateClosure.validate()) {
             return ResponseEntity.ok("Changed gate closure");

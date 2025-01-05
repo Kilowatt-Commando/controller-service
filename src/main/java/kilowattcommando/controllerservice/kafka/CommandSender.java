@@ -11,6 +11,6 @@ public class CommandSender implements PowerPlantCommandSender {
     private KafkaTemplate<String, PowerplantCommand> kafkaTemplate;
 
     @Override
-    public void sendCommand(Long powerPlantId, String command) {
+    public void sendCommand(String powerPlantId, String command) {
     }
 }

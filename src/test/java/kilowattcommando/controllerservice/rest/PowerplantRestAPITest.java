@@ -36,6 +36,26 @@ public class PowerplantRestAPITest {
     }
 
     @Test
+    public void openGateOnPlant_1_OK() throws Exception {
+        mockMvc.perform(put("/powerplant/1/gateClosure").contentType(MediaType.APPLICATION_JSON).content("{\"closure\":\"OPEN\"}")).andExpect(status().isOk());
+    }
+
+    @Test
+    public void setGateToQuarterOnPlant_1_OK() throws Exception {
+        mockMvc.perform(put("/powerplant/1/gateClosure").contentType(MediaType.APPLICATION_JSON).content("{\"closure\":\"QUARTER\"}")).andExpect(status().isOk());
+    }
+
+    @Test
+    public void setGateToHalfOnPlant_1_OK() throws Exception {
+        mockMvc.perform(put("/powerplant/1/gateClosure").contentType(MediaType.APPLICATION_JSON).content("{\"closure\":\"HALF\"}")).andExpect(status().isOk());
+    }
+
+    @Test
+    public void setGateToThreeQuartersOnPlant_1_OK() throws Exception {
+        mockMvc.perform(put("/powerplant/1/gateClosure").contentType(MediaType.APPLICATION_JSON).content("{\"closure\":\"THREE_QUARTERS\"}")).andExpect(status().isOk());
+    }
+
+    @Test
     public void invalidGateClosureOnPlant_1_400() throws Exception {
         mockMvc.perform(put("/powerplant/1/gateClosure").contentType(MediaType.APPLICATION_JSON).content("{\"closure\":\"THIRD\"}")).andExpect(status().is(400));
     }

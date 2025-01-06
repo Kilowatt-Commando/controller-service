@@ -67,9 +67,8 @@ public class PowerPlantListenerTest {
 
         ProducerRecord<String, PowerplantStatus> record = new ProducerRecord<>("backend", powerplantStatus);
 
-        Thread.sleep(500);
+        Thread.sleep(3000); // Wait for topic metadata to catch up
         producer.send(record);
-        Thread.sleep(500);
 
         await()
                 .pollInterval(3, TimeUnit.SECONDS)

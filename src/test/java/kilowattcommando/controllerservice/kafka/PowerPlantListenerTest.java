@@ -2,6 +2,7 @@ package kilowattcommando.controllerservice.kafka;
 
 import dto.PowerplantStatus;
 import kilowattcommando.controllerservice.handlers.PowerPlantStatusHandler;
+import org.apache.kafka.clients.admin.*;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -25,11 +26,14 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
 @SpringBootTest
@@ -54,18 +58,18 @@ public class PowerPlantListenerTest {
     }
 
     @Test
-    void shouldHandlePowerplantStatusEvent() {
+    void shouldHandlePowerplantStatusEvent() throws InterruptedException {
         PowerplantStatus powerplantStatus = new PowerplantStatus();
         powerplantStatus.name = "powerplant1";
 
         KafkaProducer<String, PowerplantStatus> producer = createProducer();
 
+
         ProducerRecord<String, PowerplantStatus> record = new ProducerRecord<>("backend", powerplantStatus);
 
-        log.info("Sent record: {}", record);
+        Thread.sleep(500);
         producer.send(record);
-
-        log.info("Sent record: {}", record);
+        Thread.sleep(500);
 
         await()
                 .pollInterval(3, TimeUnit.SECONDS)
@@ -86,20 +90,6 @@ public class PowerPlantListenerTest {
 
         @Value("${kafka.serverAddress}")
         private String kafkaServerAddress;
-
-        @Bean
-        public <T> ProducerFactory<String, T> producerTestFactory() {
-            Map<String, Object> configs = new HashMap<>();
-            configs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServerAddress + ":" + kafkaServerPort);
-            configs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-            configs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-            return new DefaultKafkaProducerFactory<>(configs);
-        }
-
-        @Bean
-        public <T> KafkaTemplate<String, T> kafkaTestTemplate() {
-            return new KafkaTemplate<>(producerTestFactory());
-        }
 
         @Bean
         public PowerPlantStatusHandler powerPlantStatusHandler() {

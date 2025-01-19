@@ -1,4 +1,7 @@
 # Powerplant Controller Service
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Kilowatt-Commando_controller-service&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Kilowatt-Commando_controller-service)
+
+
 This repository contains the controller microservice.
 
 ## Testcontainers

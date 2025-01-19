@@ -41,6 +41,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+      - name: Build with Maven
+        run: mvn clean package jacoco:report
       - name: Analyze with SonarQube
 
         # You can pin the exact commit or the version.
@@ -57,6 +66,9 @@ jobs:
             # mandatory
             -Dsonar.projectKey=Kilowatt-Commando_controller-service
             -Dsonar.organization=kilowatt-commando
+            -Dsonar.java.binaries=target/classes
+            -Dsonar.tests=src/test/
+            -Dsonar.sources=src/main
             # Comma-separated paths to directories containing main source files.
             #-Dsonar.sources= # optional, default is project base directory
             # When you need the analysis to take place in a directory other than the one from which it was launched

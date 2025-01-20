@@ -2,7 +2,7 @@ on: pull_request
 
 jobs:
   autoguard:
-    runs-on: ubuntu
+    runs-on: ubuntu-latest
     steps:
       - uses: MSA-API-Management/AutoGuard@v1
   

@@ -1,0 +1,8 @@
+on: pull_request
+
+jobs:
+  autoguard:
+    runs-on: ubuntu
+    steps:
+      - uses: MSA-API-Management/AutoGuard@v1
+  

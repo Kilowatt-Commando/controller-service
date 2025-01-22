@@ -1,6 +1,7 @@
 package kilowattcommando.controllerservice.kafka;
 
 import dto.PowerplantStatus;
+import kilowattcommando.controllerservice.handlers.PowerPlantActivityHandler;
 import kilowattcommando.controllerservice.handlers.PowerPlantStatusHandler;
 import org.apache.kafka.clients.admin.*;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -34,6 +35,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.mock;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
 @SpringBootTest
@@ -94,5 +96,8 @@ public class PowerPlantListenerTest {
         public PowerPlantStatusHandler powerPlantStatusHandler() {
             return new PowerPlantHandlerStub();
         }
+
+        @Bean
+        public PowerPlantActivityHandler powerPlantActivityHandler() {return mock(PowerPlantActivityHandler.class);}
     }
 }

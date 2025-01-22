@@ -25,5 +25,8 @@ public class PowerPlantActivityMonitor {
     public void checkForMissingPowerPlants() {
         Streamable<PowerPlantActivity> missingPowerplants = this.powerPlantActivityRepository.findMissingPowerPlants();
         missingPowerplants.forEach(powerPlantActivity -> log.error("Missing powerplant detected: {}", powerPlantActivity.getName()));
+        if(missingPowerplants.isEmpty()) {
+            log.info("No missing powerplant detected");
+        }
     }
 }
